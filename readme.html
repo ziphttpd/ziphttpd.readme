@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="description" content="ZipHttpd.com の簡易説明。">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>ZipHttpd README</title>
+	<link rel="icon" href="favicon.ico">
+	<link rel="stylesheet" type="text/css" href="common.css" />
+
+	<script src="CompElem.js"></script>
+	
+	<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+}
+</script>
+</head>
+<body>
+	<h1><img src="ZipHttpd.svg"> ZipHttpd 概説</h1>
+
+	<p class="ind1em">
+		１．ZipHttpd はローカルで動かす WEB サーバです。<br>
+		HTML や画像などのコンテンツを zip に圧縮したファイルを用います。<br>
+		なお、自動で解凍されますので利用者は意識する必要はありません。<br>
+	</p>
+
+	<p class="ind1em">
+		２．ZipHttpd では JavaScript で任意のテキストを保存するために WebAPI を実装しています。<br>
+		ブラウザ依存の local storage は chrome で 5 MB といった最大値制限があります。<br>
+		また、chrome/edge などのブラウザ間では引き継がれません。<br>
+		この WebAPI では数十MBを超えるようなデータでも保存できますし、ブラウザに依存しません。<br>
+	</p>
+
+	<p class="ind1em">
+		３．ZipHttpd は<a target="new" href="https://golang.org/">Go 言語</a>で記述しているため、多数の OS で利用可能です。<br>
+		Go が利用できる OS は、Windows/Linux/iOS など多岐にわたります。
+	</p>
+
+	<hr/>
+	<div id="google_translate_element"></div>
+	<p>
+		Copyright (C) 2020- ZipHttpd.com [<a href="mailto:ziphttpd@xorver.com" target="mail">mail</a>]
+	</p>
+</body>
+</html>
