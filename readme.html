@@ -65,10 +65,14 @@ function googleTranslateElementInit() {
 
 
 	<p class="ind1em">
-		<span class="strong">６．ドキュメントを利用者が容易にダウンロードするためのツールが付属します。</span><br>
+		<span class="strong">６．公開したドキュメントをリポジトリに登録できます。</span><br>
 		通常の Javadoc などはファイルをWEBからダウンロードした後に手動で docs フォルダにコピーする必要があります。<br>
-		ドキュメントの公開方法の規則に従うならば、ダウンロードをツールによって行えます。<br>
+		ドキュメントの公開方法の規則に従うならば、公開しているサーバをリポジトリに登録できます。<br>
+		利用者は Selector ツールを用いて、リポジトリに登録されているサーバから著作者の作成したカタログを読み出し、ドキュメントを探すことができます。<br>
 		公開するには自分で管理しているWEBサーバ(要HTTPS)が必要ですが、登録などその他の費用はかかりません。<br>
+		<br>
+		★ ドキュメント準備中。<br>
+		★ なお zhsign コマンドが署名を作成するツールです。<br>
 	</p>
 
 	<h2>Windows での利用について</h2>
@@ -85,63 +89,14 @@ function googleTranslateElementInit() {
 
 	<p class="ind1em">
 		ZipHttpd は現状では Windows を対象としています。<br>
-		Linux などで利用する際には Github からクローンしてビルドする必要があります。<br>
-		Git と Go (ver1.11以上) のインストールが必要です。<br>
-		Windows でも提供しているバイナリの代わりに自分でビルドして利用することもできます。<br>
-	<p/>
-
-			<p class="append">
-				$ mkdir ~/.ziphttpd<br>
-				$ mkdir ~/.ziphttpd/src<br>
-				$ cd ~/.ziphttpd/src<br>
-				<br>
-				$ git clone https://github.com/ziphttpd/ziphttpd<br>
-				$ git clone https://github.com/ziphttpd/zhsig<br>
-				<br>
-				$ cd ~/.ziphttpd/src/ziphttpd<br>
-				$ git pull<br>
-				$ bash ./build<br>
-				$ cp ziphttpd ~/.ziphttpd<br>
-				<br>
-				$ cd ~/.ziphttpd/src/zhsig<br>
-				$ git pull<br>
-				$ bash ./build<br>
-				$ cp zhsign ~/.ziphttpd<br>
-				$ cp zhget ~/.ziphttpd<br>
-				<br>
-				$ cd ~/.ziphttpd<br>
-				$ ./zhget -host ziphttpd.com -group ziphttpd-V1<br>
-				$ ./ziphttpd<br>
-			</p>
-
-		<ul>
-		<li><a href="https://git-scm.com/downloads" target="other">Git インストール</a><br>
-		<li><a href="https://golang.org/doc/install" target="other">Go インストール</a><br>
-		<li><a href="https://github.com/ziphttpd/ziphttpd" target="other">ziphttpd ソースコード</a><br>
-		<li><a href="https://github.com/ziphttpd/zhsig" target="other">zhsig/zhget ソースコード</a><br>
-		</ul>
-
-	<p class="ind1em">
-		ビルドしましたら、以降の利用者ガイドをダウンロードして、<a href="http://localhost:8823" target="ziphttpd">トップページ</a>からの閲覧が可能となります。<br>
+		Linux/iOS などで利用する際には<a href="install_to_unix.html" target="install"> unix 系システムにインストールする手順</a>を御覧ください。<br>
 	<p/>
 
 	<h2>利用者ガイドについて</h2>
 
 	<p class="ind1em">
 		Windows ではタスクアイコンからの Update により自動的に利用者ガイドはダウンロードされます。<br>
-		Linux などでは以下のコマンドを実行して、再起動してください。<br>
-	</p>
-	<p class="append">
-		$ zhget -host ziphttpd.com -group ziphttpd-V1<br>
-	</p>
-	<p class="ind1em">
-		以降は、zhget を実行すると登録された配布元まで更新をチェックしに行きます。<br>
-	</p>
-	<p class="append">
-		$ zhget<br>
-	</p>
-	<p class="ind1em">
-		公開ファイルなどの作成方法は利用者ガイドを御覧ください。<br>
+		公開ファイルなどの作成方法は利用者ガイドで提供予定です。<br>
 	</p>
 
 	<hr/>
