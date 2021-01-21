@@ -19,28 +19,132 @@ function googleTranslateElementInit() {
 </script>
 </head>
 <body>
-	<h1><img src="ZipHttpd.svg"> ZipHttpd 概説</h1>
+	<h1><img src="ZipHttpd.svg">　ZipHttpd</h1>
+	<div id="google_translate_element"></div>
+
+	<h2>概説</h2>
 
 	<p class="ind1em">
-		１．ZipHttpd はローカルで動かす WEB サーバです。<br>
-		HTML や画像などのコンテンツを zip に圧縮したファイルを用います。<br>
-		なお、自動で解凍されますので利用者は意識する必要はありません。<br>
+		<span class="strong">１．ローカルで動かす WEB サーバです。</span><br>
+		java ドキュメントなどで採用されている HTML や画像などを zip に圧縮したファイル。<br>
+		ZipHttpd ではこれを総称してドキュメントと呼ぶこととします。<br>
+		ドキュメントを解凍せずに docs ディレクトリにコピーします。<br>
+		コピーして再起動すると<a href="http://localhost:8823" target="ziphttpd">トップページ</a>からの閲覧が可能となります。<br>
 	</p>
 
 	<p class="ind1em">
-		２．ZipHttpd では JavaScript で任意のテキストを保存するために WebAPI を実装しています。<br>
-		ブラウザ依存の local storage は chrome で 5 MB といった最大値制限があります。<br>
-		また、chrome/edge などのブラウザ間では引き継がれません。<br>
-		この WebAPI では数十MBを超えるようなデータでも保存できますし、ブラウザに依存しません。<br>
+		<span class="strong">２．インストール不要です。</span><br>
+		ファイル一式を一つのディレクトリに解凍するだけです。<br>
+		レジストリや /etc 等は使用しません。<br>
 	</p>
 
 	<p class="ind1em">
-		３．ZipHttpd は<a target="new" href="https://golang.org/">Go 言語</a>で記述しているため、多数の OS で利用可能です。<br>
-		Go が利用できる OS は、Windows/Linux/iOS など多岐にわたります。
+		<span class="strong">３．大容量のテキストを保存するために WebAPI を実装しています。</span><br>
+		ブラウザ依存の local storage は以下のような不便な点があります。<br>
+	</p>
+		<p class="append">
+			・ chrome で 5 MB までといったブラウザごとの最大容量の制限があります。<br>
+			・ ブラウザのアップデートなどの都合でクリアされることがあります。<br>
+			・ chrome/edge などのブラウザ間では引き継がれません。<br>
+		</p>
+	<p class="ind1em">
+		ZipHttpd では WebAPI によってファイルとしてデータを保存できます。<br>
+		これにより、ブラウザに関わらず、大量のデータを、永続的に保存するドキュメントを作成できます。<br>
+	</p>
+
+	<p class="ind1em">
+		<span class="strong">４．多数の OS で利用可能です。</span><br>
+		github で公開しているソースコードは<a target="new" href="https://golang.org/">Go 言語</a>で記述しています。<br>
+		Go が利用できる OS は、Windows/Linux/iOS など多岐にわたります。<br>
+	</p>
+
+	<p class="ind1em">
+		<span class="strong">５．利用は無料です。</span><br>
+		広告／開発スポンサーを募集する予定です。<br>
+	</p>
+
+
+	<p class="ind1em">
+		<span class="strong">６．ドキュメントを利用者が容易にダウンロードするためのツールが付属します。</span><br>
+		通常の Javadoc などはファイルをWEBからダウンロードした後に手動で docs フォルダにコピーする必要があります。<br>
+		ドキュメントの公開方法の規則に従うならば、ダウンロードをツールによって行えます。<br>
+		公開するには自分で管理しているWEBサーバ(要HTTPS)が必要ですが、登録などその他の費用はかかりません。<br>
+	</p>
+
+	<h2>Windows での利用について</h2>
+
+	<p class="ind1em">
+		１) 任意のディレクトリに、<a href="https://ziphttpd.com/" target="other">配布ページ</a>よりダウンロードした zip を展開します。<br>
+		２) ディレクトリに解凍された Launcher.exe を起動すると、タスクトレイに常駐します。<br>
+		３）タスクトレイに常駐しているアイコンのコンテキストメニューから Update を実行します。<br>
+		ドキュメントの更新だけではなく、updater ツールを使ってプログラム自体も最新版に更新されます。<br>
+		４）アイコンをダブルクリックすると<a href="http://localhost:8823" target="ziphttpd">トップページ</a>からの閲覧が可能となります。<br>
+	<p/>
+
+	<h2>Windows 以外での利用について</h2>
+
+	<p class="ind1em">
+		ZipHttpd は現状では Windows を対象としています。<br>
+		Linux などで利用する際には Github からクローンしてビルドする必要があります。<br>
+		Git と Go (ver1.11以上) のインストールが必要です。<br>
+		Windows でも提供しているバイナリの代わりに自分でビルドして利用することもできます。<br>
+	<p/>
+
+			<p class="append">
+				$ mkdir ~/.ziphttpd<br>
+				$ mkdir ~/.ziphttpd/src<br>
+				$ cd ~/.ziphttpd/src<br>
+				<br>
+				$ git clone https://github.com/ziphttpd/ziphttpd<br>
+				$ git clone https://github.com/ziphttpd/zhsig<br>
+				<br>
+				$ cd ~/.ziphttpd/src/ziphttpd<br>
+				$ git pull<br>
+				$ bash ./build<br>
+				$ cp ziphttpd ~/.ziphttpd<br>
+				<br>
+				$ cd ~/.ziphttpd/src/zhsig<br>
+				$ git pull<br>
+				$ bash ./build<br>
+				$ cp zhsign ~/.ziphttpd<br>
+				$ cp zhget ~/.ziphttpd<br>
+				<br>
+				$ cd ~/.ziphttpd<br>
+				$ ./zhget -host ziphttpd.com -group ziphttpd-V1<br>
+				$ ./ziphttpd<br>
+			</p>
+
+		<ul>
+		<li><a href="https://git-scm.com/downloads" target="other">Git インストール</a><br>
+		<li><a href="https://golang.org/doc/install" target="other">Go インストール</a><br>
+		<li><a href="https://github.com/ziphttpd/ziphttpd" target="other">ziphttpd ソースコード</a><br>
+		<li><a href="https://github.com/ziphttpd/zhsig" target="other">zhsig/zhget ソースコード</a><br>
+		</ul>
+
+	<p class="ind1em">
+		ビルドしましたら、以降の利用者ガイドをダウンロードして、<a href="http://localhost:8823" target="ziphttpd">トップページ</a>からの閲覧が可能となります。<br>
+	<p/>
+
+	<h2>利用者ガイドについて</h2>
+
+	<p class="ind1em">
+		Windows ではタスクアイコンからの Update により自動的に利用者ガイドはダウンロードされます。<br>
+		Linux などでは以下のコマンドを実行して、再起動してください。<br>
+	</p>
+	<p class="append">
+		$ zhget -host ziphttpd.com -group ziphttpd-V1<br>
+	</p>
+	<p class="ind1em">
+		以降は、zhget を実行すると登録された配布元まで更新をチェックしに行きます。<br>
+	</p>
+	<p class="append">
+		$ zhget<br>
+	</p>
+	<p class="ind1em">
+		公開ファイルなどの作成方法は利用者ガイドを御覧ください。<br>
 	</p>
 
 	<hr/>
-	<div id="google_translate_element"></div>
 	<p>
 		Copyright (C) 2020- ZipHttpd.com [<a href="mailto:ziphttpd@xorver.com" target="mail">mail</a>]
 	</p>

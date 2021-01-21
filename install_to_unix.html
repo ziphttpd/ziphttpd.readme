@@ -1,0 +1,544 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="description" content="UNIX へのインストール">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Installation to UNIX</title>
+	<link rel="icon" href="favicon.ico">
+	<link rel="stylesheet" type="text/css" href="common.css" />
+	<link rel="stylesheet" type="text/css" href="highlight/default.css">
+	<script src="highlight/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+
+	<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+}
+</script>
+</head>
+<body>
+	<h1><img src="ZipHttpd.svg">　ZipHttpd を unix 系システムにインストールする手順</h1>
+	<div id="google_translate_element"></div>
+
+	<p class="ind1em">
+		ver とりあえず版 - 2021/01/20 <a href="https://ziphttpd.com/" target="ziphttpd">ZipHttpd.com</a><br>
+	</p>
+
+	<h2>告知事項</h2>
+
+	<p class="ind4em">
+	<iframe src="https://strnote.com/api/v1/5Ei9BRkoKMVXJTDO7f1HUg" loading="lazy" scrolling="no" style="border: 0px; width: 500px; height: 10em;"></iframe>
+	</p>
+
+	<hr/>
+
+	<a name="はじめに">
+	<h2>はじめに</h2>
+
+	<p class="ind1em">
+		ZipHttpd のバイナリ提供は当面は Windows のみの予定です。<br>
+		そのため、Linux などではソースコードからのビルドでご利用いただくことになります。<br>
+		<br>
+		複数のプロジェクトで構成されているため、ビルドして配置するのは面倒です。<br>
+		そのため<a href="#インストールの手順">簡単にビルドできるよう</a>にしてあります。<br>
+		バイナリ提供である Windows 比べてバグ対応をいち早く利用できます。<br>
+		<br>
+		しかし、同時に不安定版でもあります。<br>
+		問題がある場合、直近以外のコミットでビルドすると治る可能性があります。<br>
+		将来的には Git Flow 方式を採用し、タグを付ける予定です。<br>
+	</p>
+
+	<p class="ind1em">
+		<h2>目次</h2>
+		<ul>
+		<li><a href="#はじめに">はじめに</a>
+		<li><a href="#インストールの手順">インストールの手順</a><br>
+			　<a href="#前準備">前準備</a><br>
+			　　　<a href="#インストール先">インストール先</a><br>
+			　<a href="#インストールの実行">インストールの実行</a><br>
+		<li><a href="#動作確認">動作確認</a><br>
+			　<a href="#ZipHttpd を起動">ZipHttpd を起動</a><br>
+			　<a href="#ブラウザで起動確認">ブラウザで起動確認</a><br>
+		<li><a href="#ドキュメント">ドキュメント</a><br>
+			　<a href="#リポジトリからダウンロードする場合">リポジトリからダウンロードする場合</a><br>
+			　　　<a href="#Selector を起動">Selector を起動</a><br>
+			　　　<a href="#ブラウザで操作">ブラウザで操作</a><br>
+			　　　<a href="#repドキュメント表示">ドキュメント表示</a><br>
+			　　　<a href="#コマンドでのダウンロード">コマンドでのダウンロード</a><br>
+			　<a href="#JarDoc">Java Documet を表示する場合</a><br>
+			　　　<a href="#jarドキュメント表示">ドキュメント表示</a><br>
+			　　　<a href="#初期表示ページの調整">初期表示ページの調整</a><br>
+			　　　<a href="#文字コードの調整">文字コードの調整</a><br>
+			　<a href="#リポジトリ登録">リポジトリ登録</a><br>
+		<li><a href="#インストール後">インストール後</a><br>
+			　<a href="#プログラムの更新">プログラムの更新</a><br>
+			　<a href="#ドキュメントの更新">ドキュメントの更新</a><br>
+		</ul>
+	</p>
+
+	<a name="インストールの手順">
+	<h2>インストールの手順</h2>
+
+	<a name="前準備">
+	<h3>前準備</h3>
+
+	<p class="ind1em">
+		Git と Go (ver1.11以上) を必要とします。<br>
+		Git は標準としてインストールされているもので結構です。<br>
+		Go は version 1.11 以降であるならば問題ありません。<br>
+	</p>
+
+<div class="half common all">Go のバージョン確認<pre><code class="language-shell">~/.ziphttpd $ go version
+go version go1.15.6 linux/amd64
+</code></pre></div>
+
+	<p class="ind1em">
+		Go がインストールされていない場合は<a href="https://golang.org/doc/install" target="go">公式のインストール手順</a>に従ってください。<br>
+	</p>
+
+	<a name="インストール先">
+	<h4>インストール先</h4>
+
+	<p class="ind1em">
+		ZipHttpd は任意のディレクトリにインストールできます。<br>
+		ディレクトリを用意したら、<a href="https://ziphttpd.com/static/zh_download.sh">インストールスクリプト(bash)</a>をダウンロードします。<br>
+		<br>
+		このディレクトリ以下に動作環境を構築しますので、専用のディレクトリを作ってください。<br>
+		このディレクトリ以下のみを参照しますので、USB などのリムーバブルな場所に構築すれば他のマシンでも稼働できます。<br>
+	</p>
+
+	<p class="append">
+		mkdir .ziphttpd<br>
+		cd .ziphttpd/<br>
+		wget https://ziphttpd.com/static/zh_download.sh<br>
+		ls<br>
+	</p>
+
+<div class="half common all">インストール先の準備<pre><code class="language-shell">~ $ mkdir .ziphttpd
+~ $ cd .ziphttpd/
+~/.ziphttpd $ wget https://ziphttpd.com/static/zh_download.sh
+--2021-01-20 00:19:53--  https://ziphttpd.com/static/zh_download.sh
+ziphttpd.com (ziphttpd.com) をDNSに問いあわせています... 216.239.36.21, 216.239.38.21, 216.239.34.21, ...
+ziphttpd.com (ziphttpd.com)|216.239.36.21|:443 に接続しています... 接続しました。
+HTTP による接続要求を送信しました、応答を待っています... 200 OK
+長さ: 特定できません [text/x-sh]
+`zh_download.sh' に保存中
+
+zh_download.sh          [ <=>                ]     823  --.-KB/s    時間 0s
+
+2021-01-20 00:19:53 (27.1 MB/s) - `zh_download.sh' へ保存終了 [823]
+
+~/.ziphttpd $ ls
+zh_download.sh
+~/.ziphttpd $
+</code></pre></div>
+
+	<a name="インストールの実行">
+	<h3>インストールの実行</h3>
+
+	<p class="ind1em">
+		インストールはダウンロードしたスクリプトで実施します。<br>
+	</p>
+
+	<p class="append">
+		bash ./zh_download.sh<br>
+		ls<br>
+	</p>
+
+<div class="half common all">インストールの実行<pre><code class="language-shell">~/.ziphttpd $ bash ./zh_download.sh
+ZH_HOME: /home/hoge/.ziphttpd
+ZH_SRC: /home/hoge/.ziphttpd/src
+PROJECT BUILD START: ziphttpd.unix
+Cloning into 'ziphttpd.unix'...
+remote: Enumerating objects: 33, done.
+remote: Counting objects: 100% (33/33), done.
+remote: Compressing objects: 100% (24/24), done.
+remote: Total 33 (delta 14), reused 26 (delta 7), pack-reused 0
+Unpacking objects: 100% (33/33), done.
+Checking connectivity... done.
+Already up-to-date.
+Already up-to-date.
+PROJECT BUILD   END: ziphttpd.unix
+PROJECT BUILD START: ziphttpd
+Cloning into 'ziphttpd'...
+remote: Enumerating objects: 87, done.
+remote: Counting objects: 100% (87/87), done.
+remote: Compressing objects: 100% (68/68), done.
+remote: Total 87 (delta 20), reused 82 (delta 15), pack-reused 0
+Unpacking objects: 100% (87/87), done.
+Checking connectivity... done.
+Already up-to-date.
+Already up-to-date.
+PROJECT BUILD   END: ziphttpd
+PROJECT BUILD START: zhsig
+Cloning into 'zhsig'...
+remote: Enumerating objects: 115, done.
+remote: Counting objects: 100% (115/115), done.
+remote: Compressing objects: 100% (70/70), done.
+remote: Total 115 (delta 44), reused 103 (delta 32), pack-reused 0
+Receiving objects: 100% (115/115), 29.23 KiB | 0 bytes/s, done.
+Resolving deltas: 100% (44/44), done.
+Checking connectivity... done.
+Already up-to-date.
+Already up-to-date.
+PROJECT BUILD   END: zhsig
+PROJECT BUILD START: selector
+Cloning into 'selector'...
+remote: Enumerating objects: 63, done.
+remote: Counting objects: 100% (63/63), done.
+remote: Compressing objects: 100% (40/40), done.
+remote: Total 63 (delta 26), reused 56 (delta 19), pack-reused 0
+Unpacking objects: 100% (63/63), done.
+Checking connectivity... done.
+Already up-to-date.
+Already up-to-date.
+PROJECT BUILD   END: selector
+~/.ziphttpd $
+</code></pre></div>
+
+	<p class="ind1em">
+		インストール後は以下のようになります。<br>
+	</p>
+
+
+<div class="half common all">インストール直後のファイル<pre><code class="language-shell">~/.ziphttpd $ ls
+controller.sh  selector.sh  zh_download.sh  zhsign    ziphttpd.sh
+selector       src          zhget           ziphttpd
+~/.ziphttpd $
+</code></pre></div>
+
+	<a name="動作確認">
+	<h2>動作確認</h2>
+
+	<a name="ZipHttpd を起動">
+	<h3>ZipHttpd を起動</h3>
+
+		<p class="ind1em">
+			ZipHttpd を常駐起動させます。<br>
+		</p>
+
+		<p class="append">
+			./ziphttpd.sh start<br>
+		</p>
+
+<div class="half common all">初回起動<pre><code class="language-shell">~/.ziphttpd $ ./ziphttpd.sh start
+~/.ziphttpd $
+</code></pre></div>
+
+	<p class="ind1em">
+		起動後は以下のようになります。<br>
+	</p>
+
+
+<div class="half common all">初回起動直後のファイル<pre><code class="language-shell">~/.ziphttpd $ ls
+controller.sh     selector     store           ziphttpd
+docs              selector.sh  zh_download.sh  ziphttpd.json
+log               src          zhget           ziphttpd.pid
+portlockins.json  static       zhsign          ziphttpd.sh
+~/.ziphttpd $
+</code></pre></div>
+
+	<a name="ブラウザで起動確認">
+	<h3>ブラウザで起動確認</h3>
+
+		<p class="ind1em">
+			ZipHttpd は <a href="http://localhost:8823" target="ziphttpd">http://localhost:8823</a> にアクセスして参照できます。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/top_0.png" title="インストール直後の画面"></img><br>
+		</p>
+
+		<p class="ind1em">
+			インストール直後ではドキュメントが何もダウンロードされていません。<br>
+			まずは次節を参照して説明書のダウンロード設定をしてください。<br>
+		</p>
+
+	<a name="ドキュメント">
+	<h2>ドキュメント</h2>
+
+	<a name="リポジトリからダウンロードする場合">
+	<h3>リポジトリからダウンロードする場合</h3>
+
+	<a name="Selector を起動">
+	<h4>Selector を起動</h4>
+
+		<p class="ind1em">
+			ダウンロード設定の例として、説明書を用います。<br>
+			その操作のため、まずは selector を起動してください。<br>
+		</p>
+
+		<p class="append">
+			./selector.sh start<br>
+		</p>
+
+<div class="half common all">selector 起動<pre><code class="language-shell">~/.ziphttpd $ ./selector.sh start
+~/.ziphttpd $
+</code></pre></div>
+
+		<p class="ind1em">
+			selector は<a href="#リポジトリ登録">リポジトリ</a>から ZipHttpd のドキュメントを公開しているサイトにアクセスするツールです。<br>
+		</p>
+
+	<a name="ブラウザで操作">
+	<h4>ブラウザで操作</h4>
+
+		<p class="ind1em">
+			ブラウザで <a href="http://localhost:8822" target="ziphttpd">http://localhost:8822</a> にアクセスします。<br>
+			リポジトリ登録されているサイトの一覧がアコーディングメニューで表示されています。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/selector_0.png" title="ダウンロード設定の画面"></img><br>
+		</p>
+
+		<p class="ind1em">
+			この中から ziphttpd.com を探して開きます。<br>
+			開いた中に「download "ZipHttpd バージョン1"」のボタンがありますので押してください。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/selector_1.png" title="download ZipHttpd バージョン1"></img><br>
+		</p>
+
+		<p class="ind1em">
+			selector での操作は終了しましたので停止します。<br>
+			ZipHttpd は再起動してください。<br>
+		</p>
+
+		<p class="append">
+			./selector.sh stop<br>
+			./ziphttpd.sh restart<br>
+		</p>
+
+<div class="half common all">ZipHttpd 再起動<pre><code class="language-shell">~/.ziphttpd $ ./selector.sh stop
+~/.ziphttpd $ ./ziphttpd.sh restart
+~/.ziphttpd $
+</code></pre></div>
+
+		<p class="ind1em">
+			ブラウザで見ると ZipHttpd ドキュメントが top 画面に追加されています。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/top_1.png" title="ZipHttpd バージョン1"></img><br>
+		</p>
+
+		<p class="append">
+			selector の WebAPI でワンタッチ登録させる案もありましたが、第三者に勝手に登録される危険性があるため廃案となりました。<br>
+			例) http://localhost:8822/api/one/{サイト}/{グループ} へのリンクをクリックすると登録<br>
+		</p>
+
+	<a name="repドキュメント表示">
+	<h4>ドキュメント表示</h4>
+
+		<p class="ind1em">
+			ドキュメントを top 画面のリンクから開きます。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/doc_0.png" title="ドキュメント表示"></img><br>
+		</p>
+
+	<a name="コマンドでのダウンロード">
+	<h4>コマンドでのダウンロード</h4>
+
+		<p class="ind1em">
+			selector は zhget のフロントエンドです。<br>
+			ダウンロードするドキュメントが特定できているならば、<br>
+			<code>$ ./zhget -host ziphttpd.com -group ziphttpd-V1</code><br>
+			という操作でもダウンロードの登録が可能です。<br>
+		</p>
+		<p class="ind1em">
+			この操作ではリポジトリに登録していないサイトのドキュメントでもダウンロードできます。<br>
+		</p>
+
+	<a name="JarDoc">
+	<h3>Java Documet を表示する場合</h3>
+
+		<p class="ind1em">
+			Java のドキュメントは zip 圧縮されていますので、ZipHttpd で簡単に参照できます。<br>
+			そのためには docs フォルダにダウンロードして、ZhpHttpd を再起動してください。<br>
+		</p>
+
+		<p class="append">
+			cd docs<br>
+			wget https://repo1.maven.org/maven2/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1-javadoc.jar<br>
+			cd ..<br>
+			./ziphttpd.sh restart<br>
+		</p>
+
+<div class="half common all">ZipHttpd 再起動<pre><code class="language-shell">~/.ziphttpd $ cd docs
+~/.ziphttpd/docs $ wget https://repo1.maven.org/maven2/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1-javadoc.jar
+--2021-01-20 00:42:36--  https://repo1.maven.org/maven2/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1-javadoc.jar
+repo1.maven.org (repo1.maven.org) をDNSに問いあわせています... 151.101.52.209
+repo1.maven.org (repo1.maven.org)|151.101.52.209|:443 に接続しています... 接続しました。
+HTTP による接続要求を送信しました、応答を待っています... 200 OK
+長さ: 671543 (656K) [application/java-archive]
+`javax.servlet-api-4.0.1-javadoc.jar' に保存中
+
+javax.servlet-api-4 100%[===================>] 655.80K  1.10MB/s    時間 0.6s
+
+2021-01-20 00:42:37 (1.10 MB/s) - `javax.servlet-api-4.0.1-javadoc.jar' へ保存完了 [671543/671543]
+
+~/.ziphttpd/docs $ cd ..
+~/.ziphttpd $ ./ziphttpd.sh restart
+</code></pre></div>
+
+		<p class="ind4em">
+			<img src="img/top_2.png" title="JavaDoc"></img><br>
+		</p>
+
+
+	<a name="jarドキュメント表示">
+	<h4>ドキュメント表示</h4>
+
+		<p class="ind1em">
+			top 画面のリンクから開きます。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/dir_0.png" title="ディレクトリ表示"></img><br>
+		</p>
+
+	<a name="初期表示ページの調整">
+	<h4>初期表示ページの調整</h4>
+
+		<p class="ind1em">
+			ドキュメントの初期表示ファイルが分かりませんので、ディレクトリが表示されています。<br>
+			index.html を開くようにするため、docs のドキュメント設定ファイルに <code>"docroot": "index.html",</code> の一行を追加します。<br>
+		</p>
+
+		<p class="append">
+			cat docs/javax.servlet-api-4.0.1-javadoc.json<br>
+			vi docs/javax.servlet-api-4.0.1-javadoc.json<br>
+			cat docs/javax.servlet-api-4.0.1-javadoc.json<br>
+			./ziphttpd.sh restart<br>
+		</p>
+
+<div class="half common all">json編集<pre><code class="language-shell">~/.ziphttpd $ cat docs/javax.servlet-api-4.0.1-javadoc.json
+{
+    "name": "javax.servlet-api-4.0.1-javadoc",
+    "path": "docs/javax.servlet-api-4.0.1-javadoc.jar"
+}~/.ziphttpd $ vi docs/javax.servlet-api-4.0.1-javadoc.json
+~/.ziphttpd $ cat docs/javax.servlet-api-4.0.1-javadoc.json
+{
+    "docroot": "index.html",
+    "name": "javax.servlet-api-4.0.1-javadoc",
+    "path": "docs/javax.servlet-api-4.0.1-javadoc.jar"
+}
+~/.ziphttpd $ ./ziphttpd.sh restart
+~/.ziphttpd $
+</code></pre></div>
+
+		<p class="ind1em">
+			ドキュメントの初期表示ファイルとして index.html が開かれるようになります。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/doc_1.png" title="index.html 表示"></img><br>
+		</p>
+
+	<a name="文字コードの調整">
+	<h4>文字コードの調整</h4>
+
+		<p class="ind1em">
+			また、ドキュメントによっては文字コードが utf-8 でないため文字化けする場合があります。<br>
+			その場合にはファイルの文字コードを確認し、<code>"contentencoding": "Shift_JIS",</code> と追加してください。<br>
+		</p>
+
+	<a name="リポジトリ登録">
+	<h3>リポジトリ登録</h3>
+
+		<p class="ind1em">
+			selector は ziphttpd.com をリポジトリとして、ドキュメントの提供サイトを取得しています。<br>
+			リポジトリへの登録はドキュメントにはまだ記述していませんが、サインインなしの無料で登録可能です。<br>
+		</p>
+
+		<p class="append">
+			公開鍵(public.pem)＆公開鍵署名(public.pem.zhsig)とカタログ(catalog.json)を zhsign で作成します。<br>
+			カタログに説明などを書き込み、自社(例:yourdomain.com)サイトの https://yourdomain.com/sig/ 以下に公開します。<br>
+			https://ziphttpd.com/api/v1/regist/yourdomain.com にアクセスします。（ブラウザからでも構いません）<br>
+			<br>
+			これを契機として ziphttpd.com は公開鍵を署名で検証したのちに、一覧にそのドメインを追加します。<br>
+		</p>
+
+	<a name="インストール後">
+	<h2>インストール後</h2>
+
+	<p class="ind1em">
+		インストールした後に ZipHttpd が更新された場合にはどうしたら良いでしょうか？<br>
+		また、ダウンロードしているドキュメントが著作者によって更新されている場合も面倒です。<br>
+		そんな時のための説明です。<br>
+	</p>
+
+	<a name="プログラムの更新">
+	<h3>プログラムの更新</h3>
+
+	<p class="ind1em">
+		インストールと同じく zh_download.sh を実行します。<br>
+		プログラムが常駐している場合に問題があるかもしれませんので、停止させてから実行してください。<br>
+	</p>
+
+	<p class="append">
+		./ziphttpd.sh stop<br>
+		./selector.sh stop<br>
+		bash ./zh_download.sh<br>
+		./ziphttpd.sh start<br>
+	</p>
+
+<div class="half common all">プログラムの更新<pre><code class="language-shell">~/.ziphttpd $ ./ziphttpd.sh stop
+~/.ziphttpd $ ./selector.sh stop
+~/.ziphttpd $ bash ./zh_download.sh
+ZH_HOME: /home/hoge/.ziphttpd
+ZH_SRC: /home/hoge/.ziphttpd/src
+PROJECT BUILD START: ziphttpd.unix
+Already up-to-date.
+Already up-to-date.
+PROJECT BUILD   END: ziphttpd.unix
+PROJECT BUILD START: ziphttpd
+Already up-to-date.
+Already up-to-date.
+PROJECT BUILD   END: ziphttpd
+PROJECT BUILD START: zhsig
+Already up-to-date.
+Already up-to-date.
+PROJECT BUILD   END: zhsig
+PROJECT BUILD START: selector
+Already up-to-date.
+Already up-to-date.
+PROJECT BUILD   END: selector
+~/.ziphttpd $ ./ziphttpd.sh start
+~/.ziphttpd $ 
+</code></pre></div>
+
+	<a name="ドキュメントの更新">
+	<h3>ドキュメントの更新</h3>
+
+	<p class="ind1em">
+		更新されたドキュメントを自動的にダウンロードすることができます。<br>
+		そのためには zhget を引数無しで実行します。<br>
+		ZipHttpd を再起動すればドキュメントは更新されたものになります。<br>
+	</p>
+
+	<p class="append">
+		./ziphttpd.sh stop<br>
+		./zhget<br>
+		./ziphttpd.sh start<br>
+	</p>
+
+<div class="half common all">ドキュメントの更新<pre><code class="language-shell">~/.ziphttpd $ ./ziphttpd.sh stop
+~/.ziphttpd $ ./zhget
+~/.ziphttpd $ ./ziphttpd.sh start
+~/.ziphttpd $ 
+</code></pre></div>
+
+	<hr/>
+	<p>
+		Copyright (C) 2020- <a href="https://ziphttpd.com/" target="ziphttpd">ZipHttpd.com</a> [<a href="mailto:ziphttpd@xorver.com" target="mail">mail</a>]<br>
+	</p>
+</body>
+</html>

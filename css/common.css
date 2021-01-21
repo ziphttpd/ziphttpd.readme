@@ -80,6 +80,7 @@ H1 {
 	background-color: aqua;
 	color: #000000;
 	padding: 16px 0px 16px 15px;
+//	margin-top: 2em;
 	clear: both;
 }
 H2 {
@@ -93,6 +94,7 @@ H2 {
 	background-color: #eeeecc;
 	color: #000066;
 	padding: 2px 0px 2px 10px;
+//	margin-top: 2em;
 	clear: both;
 }
 H3 {
@@ -105,16 +107,20 @@ H3 {
 	background-color: #eeeeee;
 	color: #000066;
 	padding: 2px 0px 2px 10px;
+//	margin-top: 2em;
 	clear: both;
 }
 H4 {
 	width: 400px;
 	font-size: 110%;
 	font-weight: normal;
+//	border-width: 4px 0px 0px 4px;
+//	border-style: solid;
 	border-color: #006666;
 	background-color: bisque;
 	color: #000066;
 	padding: 2px 0px 2px 10px;
+//	margin-top: 2em;
 	clear: both;
 }
 
@@ -128,12 +134,6 @@ a:any-link { color: blue; }
 }
 .ind2em {
 	padding-left: 2em;
-}
-.ind4em {
-	padding-left: 4em;
-}
-.ind8em {
-	padding-left: 8em;
 }
 .ind10{
 	padding-left: 10em;

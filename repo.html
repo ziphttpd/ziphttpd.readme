@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="description" content="ziphttpd document repository">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>ZipHttpd document repository</title>
+	<link rel="icon" href="favicon.ico">
+	<link rel="stylesheet" type="text/css" href="common.css" />
+	<script src="https://code.jquery.com/jquery-3.0.0.min.js"></script>
+	<script src="https://code.jquery.com/ui/1.12.0/jquery-ui.js"></script>
+<script>
+class Repository {
+  constructor() {
+    this.hosts = {};
+  }
+  add(host, res) {
+//    this.hosts[host] = res;
+    $('#hists')
+    .add("<h3>"+host+"</h3>")
+    .after("<div><p>"+res+"</p></div>");
+  }
+}
+function wget(path) {
+  return new Promise(function(callback, onerror) {
+    const xhr = new XMLHttpRequest();
+    xhr.open("GET", path);
+    //xhr.responseType = 'json';
+    xhr.onreadystatechange = function() {
+      if (xhr.readyState==4) {
+        switch (xhr.status) {
+        case 200:	// OK
+          callback(xhr.response);
+          break;
+        default:
+          onerror(xhr.response);
+          break;
+        }
+      }
+    };
+    xhr.send(null);
+  });
+}
+repo = new Repository();
+const ziphttpdcom = "https://ziphttpd.com/api/v1/";
+function list() {return wget(ziphttpdcom + "list");}
+function regist(site) {return wget(ziphttpdcom + "regist/" + site);}
+function catalog(host) {
+  wget("https://" + host + "/sig/catalog.json").then(res => {
+//    obj = json.parse(res);
+    repo.add(host, res);
+  }).catch(res => {
+    repo.add(host, res);
+  });
+}
+list().then(res => {
+  console.log(res);
+  let obj = JSON.parse(res);
+  for (host of obj.hosts) {
+    catalog(host);
+  }
+}).catch(res => {
+  console.error(res);
+});
+</script>
+</head>
+<body>
+  <script>
+  $(function() {
+    $("#hists").accordion();
+  });
+  </script>
+  <div id="hosts">
+  </div>
+</body>
+</html>
