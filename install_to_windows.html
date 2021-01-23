@@ -1,0 +1,586 @@
+<!DOCTYPE html>
+<html>
+
+<head>
+	<meta charset="utf-8">
+	<meta name="description" content="Windows でのビルド">
+	<meta name="viewport" content="width=device-width,initial-scale=1">
+	<title>Installation to Windows</title>
+	<link rel="icon" href="favicon.ico">
+	<link rel="stylesheet" type="text/css" href="common.css" />
+	<link rel="stylesheet" type="text/css" href="highlight/default.css">
+	<script src="highlight/highlight.min.js"></script>
+	<script>hljs.initHighlightingOnLoad();</script>
+
+	<script type="text/javascript" src="https://translate.google.com/translate_a/element.js?cb=googleTranslateElementInit"></script>
+<script type="text/javascript">
+function googleTranslateElementInit() {
+  new google.translate.TranslateElement({pageLanguage: 'ja', layout: google.translate.TranslateElement.InlineLayout.SIMPLE}, 'google_translate_element');
+}
+</script>
+</head>
+<body>
+	<h1><img src="ZipHttpd.svg">　ZipHttpd を Windows でビルドする手順</h1>
+	<div id="google_translate_element"></div>
+
+	<p class="ind1em">
+		ver とりあえず版 - 2021/01/23 <a href="https://ziphttpd.com/" target="ziphttpd">ZipHttpd.com</a><br>
+	</p>
+
+	<h2>告知事項</h2>
+
+	<p class="ind4em">
+	<iframe src="https://strnote.com/api/v1/5Ei9BRkoKMVXJTDO7f1HUg" loading="lazy" scrolling="no" style="border: 0px; width: 500px; height: 10em;"></iframe>
+	</p>
+
+	<hr/>
+
+	<a name="はじめに">
+	<h2>はじめに</h2>
+
+	<p class="ind1em">
+		Windows は ZipHttpd のバイナリ提供を行っています。<br>
+		そのため、ソースコードからのビルドでご利用することは推奨できません。<br>
+		しかし、最新のバグ対応などをいち早く入手したい場合などで自分でビルドしたい場合もあるかと思います。<br>
+		本ドキュメントは Windows でソースからビルドする手順に関してのものです。<br>
+	</p>
+	<p class="append">
+		なお、本ドキュメントの一部の画像は<a href="install_to_unix.html" > UNIX へのインストールのドキュメント</a>の画像からの流用です。<br>
+	</p>
+	<p class="ind1em">
+		複数のプロジェクトで構成されているため、ビルドして配置するのは面倒です。<br>
+		そのため<a href="#インストールの手順">簡単にビルドできるよう</a>にしてあります。<br>
+		<br>
+		しかし、同時に不安定版でもあります。<br>
+		問題がある場合、直近以外のコミットでビルドすると治る可能性があります。<br>
+		将来的には Git Flow 方式を採用し、タグを付ける予定です。<br>
+	</p>
+
+	<p class="ind1em">
+		<h2>目次</h2>
+		<ul>
+		<li><a href="#はじめに">はじめに</a>
+		<li><a href="#インストールの手順">インストールの手順</a><br>
+			　<a href="#前準備">前準備</a><br>
+			　　　<a href="#インストール先">インストール先</a><br>
+			　<a href="#インストールの実行">インストールの実行</a><br>
+		<li><a href="#動作確認">動作確認</a><br>
+			　<a href="#Launcher を起動">Launcher を起動</a><br>
+			　<a href="#ブラウザで起動確認">ブラウザで起動確認</a><br>
+		<li><a href="#ドキュメント">ドキュメント</a><br>
+			　<a href="#リポジトリからダウンロードする場合">リポジトリからダウンロードする場合</a><br>
+			　　　<a href="#Selector を起動">Selector を起動</a><br>
+			　　　<a href="#ブラウザで操作">ブラウザで操作</a><br>
+			　　　<a href="#repドキュメント表示">ドキュメント表示</a><br>
+			　　　<a href="#コマンドでのダウンロード">コマンドでのダウンロード</a><br>
+			　<a href="#JarDoc">Java Documet を表示する場合</a><br>
+			　　　<a href="#jarドキュメント表示">ドキュメント表示</a><br>
+			　　　<a href="#初期表示ページの調整">初期表示ページの調整</a><br>
+			　　　<a href="#文字コードの調整">文字コードの調整</a><br>
+			　<a href="#リポジトリ登録">リポジトリ登録</a><br>
+		<li><a href="#インストール後">インストール後</a><br>
+			　<a href="#プログラムの更新">プログラムの更新</a><br>
+			　<a href="#ドキュメントの更新">ドキュメントの更新</a><br>
+		</ul>
+	</p>
+
+	<a name="インストールの手順">
+	<h2>インストールの手順</h2>
+
+	<a name="前準備">
+	<h3>前準備</h3>
+
+	<p class="ind1em">
+		Git と Go (ver1.11以上) を必要とします。<br>
+		Git は標準としてインストールされているもので結構です。<br>
+		Go は version 1.11 以降であるならば問題ありません。<br>
+	</p>
+
+<div class="half common all">Go のバージョン確認<pre><code class="language-shell">d:\.ziphttpd>go version
+go version go1.14.13 windows/amd64
+
+d:\.ziphttpd>
+</code></pre></div>
+
+	<p class="ind1em">
+		インストールされていない場合は公式のインストール手順に従ってください。<br>
+		<ul>
+		<li><a href="https://git-scm.com/downloads" target="other">Git インストール</a><br>
+		<li><a href="https://golang.org/doc/install" target="other">Go インストール</a><br>
+		</ul>
+	</p>
+
+	<a name="インストール先">
+	<h4>インストール先</h4>
+
+	<p class="ind1em">
+		ZipHttpd は任意のディレクトリにインストールできます。<br>
+		ディレクトリを用意したら、<a href="https://ziphttpd.com/static/zh_download.cmd">インストールバッチファイル(CMD)</a>をダウンロードします。<br>
+		<br>
+		このディレクトリ以下に動作環境を構築しますので、専用のディレクトリを作ってください。<br>
+		このディレクトリ以下のみを参照しますので、USB などのリムーバブルな場所に構築すれば他のマシンでも稼働できます。<br>
+	</p>
+
+	<p class="append">
+		mkdir .ziphttpd<br>
+		cd .ziphttpd/<br>
+		bitsadmin /transfer myDownloadJob /download /priority normal https://ziphttpd.com/static/zh_download.cmd %CD%\zh_download.cmd<br>
+		dir<br>
+	</p>
+
+<div class="half common all">インストール先の準備<pre><code class="language-shell">d:\.ziphttpd>mkdir .ziphttpd
+d:\.ziphttpd>cd .ziphttpd
+d:\.ziphttpd>bitsadmin /transfer myDownloadJob /download /priority normal https://ziphttpd.com/static/zh_download.cmd %CD%\zh_download.cmd
+DISPLAY: 'myDownloadJob' TYPE: DOWNLOAD STATE: TRANSFERRED
+PRIORITY: NORMAL FILES: 1 / 1 BYTES: 742 / 742 (100%)
+Transfer complete.
+d:\.ziphttpd>dir
+ ドライブ D のボリューム ラベルがありません。
+ ボリューム シリアル番号は AA29-6187 です
+
+ d:\.ziphttpd のディレクトリ
+
+2021/01/23  20:05    &lt;DIR&gt;          .
+2021/01/23  20:05    &lt;DIR&gt;          ..
+2021/01/23  20:06               742 zh_download.cmd
+               1 個のファイル                 742 バイト
+               2 個のディレクトリ  78,172,520,448 バイトの空き領域
+
+d:\.ziphttpd>
+</code></pre></div>
+
+	<a name="インストールの実行">
+	<h3>インストールの実行</h3>
+
+	<p class="ind1em">
+		インストールはダウンロードしたスクリプトで実施します。<br>
+	</p>
+
+	<p class="append">
+		./zh_download.cmd<br>
+		dir<br>
+	</p>
+
+<div class="half common all">インストールの実行<pre><code class="language-shell">d:\.ziphttpd>zh_download.cmd
+"ZH_HOME: d:\.ziphttpd\"
+"ZH_SRC: d:\.ziphttpd\src"
+"PROJECT BUILD START: ziphttpd.windows"
+Cloning into 'ziphttpd.windows'...
+remote: Enumerating objects: 31, done.
+remote: Counting objects: 100% (31/31), done.
+remote: Compressing objects: 100% (22/22), done.
+remote: Total 31 (delta 11), reused 27 (delta 7), pack-reused 0
+Unpacking objects: 100% (31/31), 3.41 KiB | 1024 bytes/s, done.
+Already up to date.
+Already up to date.
+        1 個のファイルをコピーしました。
+
+（・・・中略・・・）
+
+プロジェクト "d:\.ziphttpd\src\Launcher\ziphttpdTool.sln" (既定のターゲット) のビルドが完了しました。
+
+
+ビルドに成功しました。
+    0 個の警告
+    0 エラー
+
+経過時間 00:00:01.25
+        1 個のファイルをコピーしました。
+
+d:\.ziphttpd>
+</code></pre></div>
+
+	<p class="ind1em">
+		インストール後は以下のようになります。<br>
+	</p>
+
+
+<div class="half common all">インストール直後のファイル<pre><code class="language-shell">d:\.ziphttpd>dir
+ ドライブ D のボリューム ラベルがありません。
+ ボリューム シリアル番号は AA29-6187 です
+
+ d:\.ziphttpd のディレクトリ
+
+2021/01/23  20:05    &lt;DIR&gt;          .
+2021/01/23  20:05    &lt;DIR&gt;          ..
+2021/01/23  20:10    &lt;DIR&gt;          src
+2021/01/23  20:06               742 zh_download.cmd.old
+2021/01/23  20:10               785 zh_download.cmd
+2021/01/23  20:10        10,786,304 ziphttpd.exe
+2021/01/23  20:10         7,476,224 zhsign.exe
+2021/01/23  20:10         7,489,024 zhget.exe
+2021/01/23  20:11        12,558,848 selector.exe
+2021/01/23  20:11         7,789,568 updater.exe
+2021/01/23  20:11            14,848 launcher.exe
+               8 個のファイル          46,116,343 バイト
+               3 個のディレクトリ  77,950,877,696 バイトの空き領域
+
+d:\.ziphttpd>
+</code></pre></div>
+
+	<a name="動作確認">
+	<h2>動作確認</h2>
+
+	<a name="Launcher を起動">
+	<h3>Launcher を起動</h3>
+
+	<p class="ind1em">
+		Launcher をダブルクリックすると、タスクバーに <img src="img/taskbar_1.png"> アイコンが表示され、起動後のディレクトリは以下のようになります。<br>
+	</p>
+
+
+<div class="half common all">初回起動直後のファイル<pre><code class="language-shell">d:\.ziphttpd>dir
+ ドライブ D のボリューム ラベルがありません。
+ ボリューム シリアル番号は AA29-6187 です
+
+ d:\.ziphttpd のディレクトリ
+
+2021/01/23  20:05    &lt;DIR&gt;          .
+2021/01/23  20:05    &lt;DIR&gt;          ..
+2021/01/23  20:10    &lt;DIR&gt;          src
+2021/01/23  20:06               742 zh_download.cmd.old
+2021/01/23  20:10               785 zh_download.cmd
+2021/01/23  20:10        10,786,304 ziphttpd.exe
+2021/01/23  20:10         7,476,224 zhsign.exe
+2021/01/23  20:10         7,489,024 zhget.exe
+2021/01/23  20:11        12,558,848 selector.exe
+2021/01/23  20:11         7,789,568 updater.exe
+2021/01/23  20:11            14,848 launcher.exe
+2021/01/23  20:10        10,786,304 ziphttpd.exe.now
+2021/01/23  20:14                 6 ziphttpd.pid
+2021/01/23  20:14    &lt;DIR&gt;          log
+2021/01/23  20:14               380 ziphttpd.json
+2021/01/23  20:14    &lt;DIR&gt;          docs
+2021/01/23  20:14                 2 portlockins.json
+              12 個のファイル          56,903,035 バイト
+               5 個のディレクトリ  77,939,212,288 バイトの空き領域
+
+d:\.ziphttpd>
+</code></pre></div>
+
+	<a name="ブラウザで起動確認">
+	<h3>ブラウザで起動確認</h3>
+
+	<p class="ind1em">
+		ZipHttpd のトップページはアイコンをダブルクリックすると開きます。<br>
+	</p>
+
+	<p class="ind4em">
+		<img src="img/top_0.png" title="インストール直後の画面"></img><br>
+	</p>
+
+	<p class="ind1em">
+		インストール直後ではドキュメントが何もダウンロードされていません。<br>
+		まずは次節を参照して説明書のダウンロード設定をしてください。<br>
+	</p>
+
+	<a name="ドキュメント">
+	<h2>ドキュメント</h2>
+
+	<a name="リポジトリからダウンロードする場合">
+	<h3>リポジトリからダウンロードする場合</h3>
+
+	<a name="Selector を起動">
+	<h4>Selector を起動</h4>
+
+		<p class="ind1em">
+			ダウンロード設定の例として、説明書を用います。<br>
+			その操作のため、まずはアイコンを右クリックしてメニューを出して Selector を起動してください。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/menu_selector.png">
+		</p>
+
+		<p class="ind1em">
+			selector は<a href="#リポジトリ登録">リポジトリ</a>から ZipHttpd のドキュメントを公開しているサイトにアクセスするツールです。<br>
+		</p>
+
+	<a name="ブラウザで操作">
+	<h4>ブラウザで操作</h4>
+
+		<p class="ind1em">
+			ブラウザで <a href="http://localhost:8822" target="ziphttpd">http://localhost:8822</a> にアクセスします。<br>
+			リポジトリ登録されているサイトの一覧がアコーディングメニューで表示されています。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/selector_0.png" title="ダウンロード設定の画面"></img><br>
+		</p>
+
+		<p class="ind1em">
+			この中から ziphttpd.com を探して開きます。<br>
+			開いた中に「download "ZipHttpd バージョン1"」のボタンがありますので押してください。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/selector_1.png" title="download ZipHttpd バージョン1"></img><br>
+		</p>
+
+		<p class="ind1em">
+			ZhpHttpd を再起動してください。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/menu_restart.png">
+		</p>
+
+		<p class="ind1em">
+			ブラウザで見ると ZipHttpd ドキュメントが top 画面に追加されています。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/top_1.png" title="ZipHttpd バージョン1"></img><br>
+		</p>
+
+		<p class="append">
+			selector の WebAPI でワンタッチ登録させる案もありましたが、第三者に勝手に登録される危険性があるため廃案となりました。<br>
+			例) http://localhost:8822/api/one/{サイト}/{グループ} へのリンクをクリックすると登録<br>
+		</p>
+
+	<a name="repドキュメント表示">
+	<h4>ドキュメント表示</h4>
+
+		<p class="ind1em">
+			ドキュメントを top 画面のリンクから開きます。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/doc_0.png" title="ドキュメント表示"></img><br>
+		</p>
+
+	<a name="コマンドでのダウンロード">
+	<h4>コマンドでのダウンロード</h4>
+
+		<p class="ind1em">
+			selector は zhget のフロントエンドです。<br>
+			ダウンロードするドキュメントが特定できているならば、<br>
+			<code>zhget.exe -host ziphttpd.com -group ziphttpd-V1</code><br>
+			という操作でもダウンロードの登録が可能です。<br>
+		</p>
+		<p class="ind1em">
+			この操作ではリポジトリに登録していないサイトのドキュメントでもダウンロードできます。<br>
+		</p>
+
+	<a name="JarDoc">
+	<h3>Java Documet を表示する場合</h3>
+
+		<p class="ind1em">
+			Java のドキュメントは zip 圧縮されていますので、ZipHttpd で簡単に参照できます。<br>
+			まずは docs フォルダにダウンロードします。<br>
+			<br>
+			コマンドラインでダウンロードするにはこんな感じです。<br>
+		</p>
+
+		<p class="append">
+			set URL=https://repo1.maven.org/maven2/javax/servlet/javax.servlet-api/4.0.1/javax.servlet-api-4.0.1-javadoc.jar<br>
+			bitsadmin /transfer myDownloadJob /download /priority normal %URL% %CD%\docs\javax.servlet-api-4.0.1-javadoc.jar<br>
+		</p>
+
+		<p class="ind1em">
+			ZhpHttpd を再起動してください。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/menu_restart.png">
+		</p>
+
+		<p class="ind1em">
+			top 画面にリンクが追加されます。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/top_2.png" title="JavaDoc"></img><br>
+		</p>
+
+
+	<a name="jarドキュメント表示">
+	<h4>ドキュメント表示</h4>
+
+		<p class="ind1em">
+			top 画面のリンクから開きます。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/dir_0.png" title="ディレクトリ表示"></img><br>
+		</p>
+
+	<a name="初期表示ページの調整">
+	<h4>初期表示ページの調整</h4>
+
+		<p class="ind1em">
+			ドキュメントの初期表示ファイルが分かりませんので、ディレクトリが表示されていますが、index.html を開くようにします。<br>
+		</p>
+
+		<p class="append">
+			type docs/javax.servlet-api-4.0.1-javadoc.json<br>
+			vi docs/javax.servlet-api-4.0.1-javadoc.json<br>
+			type docs/javax.servlet-api-4.0.1-javadoc.json<br>
+		</p>
+
+<div class="half common all">docs/javax.servlet-api-4.0.1-javadoc.json<pre><code class="language-shell">{
+    "name": "javax.servlet-api-4.0.1-javadoc",
+    "path": "docs\\javax.servlet-api-4.0.1-javadoc.jar"
+}
+</code></pre></div>
+
+		<p class="ind1em">
+			そのため、docs のドキュメント設定ファイルに <code>"docroot": "index.html",</code> の一行を追加します。<br>
+		</p>
+
+
+<div class="half common all">docs/javax.servlet-api-4.0.1-javadoc.json<pre><code class="language-shell">{
+    "docroot": "index.html",
+    "name": "javax.servlet-api-4.0.1-javadoc",
+    "path": "docs\\javax.servlet-api-4.0.1-javadoc.jar"
+}
+</code></pre></div>
+
+		<p class="ind1em">
+			メニューから再起動(Restart)することでドキュメントの初期表示ファイルとして index.html が開かれるようになります。<br>
+		</p>
+
+		<p class="ind4em">
+			<img src="img/doc_1.png" title="index.html 表示"></img><br>
+		</p>
+
+	<a name="文字コードの調整">
+	<h4>文字コードの調整</h4>
+
+		<p class="ind1em">
+			また、ドキュメントによっては文字コードが utf-8 でないため文字化けする場合があります。<br>
+			その場合にはファイルの文字コードを確認し、<code>"contentencoding": "Shift_JIS",</code> と追加してください。<br>
+		</p>
+
+	<a name="リポジトリ登録">
+	<h3>リポジトリ登録</h3>
+
+		<p class="ind1em">
+			selector は ziphttpd.com をリポジトリとして、ドキュメントの提供サイトを取得しています。<br>
+			リポジトリへの登録はドキュメントにはまだ記述していませんが、サインインなしの無料で登録可能です。<br>
+		</p>
+
+		<p class="append">
+			公開鍵(public.pem)＆公開鍵署名(public.pem.zhsig)とカタログ(catalog.json)を zhsign で作成します。<br>
+			カタログに説明などを書き込み、自社(例:yourdomain.com)サイトの https://yourdomain.com/sig/ 以下に公開します。<br>
+			https://ziphttpd.com/api/v1/regist/yourdomain.com にアクセスします。（ブラウザからでも構いません）<br>
+			<br>
+			これを契機として ziphttpd.com は公開鍵を署名で検証したのちに、一覧にそのドメインを追加します。<br>
+		</p>
+
+	<a name="インストール後">
+	<h2>インストール後</h2>
+
+	<p class="ind1em">
+		インストールした後に ZipHttpd が更新された場合にはどうしたら良いでしょうか？<br>
+		また、ダウンロードしているドキュメントが著作者によって更新されている場合も面倒です。<br>
+		そんな時のための説明です。<br>
+	</p>
+
+	<a name="プログラムの更新">
+	<h3>プログラムの更新</h3>
+
+	<p class="ind1em">
+		ソースコードからビルドしている場合、Updater を使用するとバイナリ提供版で更新されてしまいます。<br>
+	</p>
+
+		<p class="ind4em">
+			<img src="img/menu_update.png">
+		</p>
+
+	<p class="ind1em">
+		ソースから更新するには、インストールと同じく zh_download.cmd を実行します。<br>
+		プログラムが常駐している場合に問題があるかもしれませんので、停止させてから実行してください。<br>
+	</p>
+
+	<p class="append">
+		zh_download.cmd<br>
+	</p>
+
+<div class="half common all">プログラムの更新<pre><code class="language-shell">d:\.ziphttpd>zh_download.cmd
+"ZH_HOME: d:\.ziphttpd\"
+"ZH_SRC: d:\.ziphttpd\src"
+"PROJECT BUILD START: ziphttpd.windows"
+Already up to date.
+Already up to date.
+        1 個のファイルをコピーしました。
+"PROJECT BUILD START: ziphttpd"
+Already up to date.
+Already up to date.
+        1 個のファイルをコピーしました。
+"PROJECT BUILD START: zhsig"
+Already up to date.
+Already up to date.
+        1 個のファイルをコピーしました。
+        1 個のファイルをコピーしました。
+"PROJECT BUILD START: selector"
+Already up to date.
+Already up to date.
+        1 個のファイルをコピーしました。
+"PROJECT BUILD START: updater"
+Already up to date.
+Already up to date.
+        1 個のファイルをコピーしました。
+"PROJECT BUILD START: Launcher"
+Already up to date.
+Already up to date.
+Microsoft (R) Build Engine バージョン 4.8.3752.0
+[Microsoft .NET Framework、バージョン 4.0.30319.42000]
+Copyright (C) Microsoft Corporation. All rights reserved.
+
+このソリューション内のプロジェクトを 1 度に 1 つずつビルドします。並行ビルドを有効にするには、"/m" スイッチを追加してください。
+2021/01/23 23:10:42 にビルドを開始しました。
+ノード 1 上のプロジェクト "d:\.ziphttpd\src\Launcher\ziphttpdTool.sln" (既定のターゲット)。
+ValidateSolutionConfiguration:
+  ソリューション構成 "Release|Any CPU" をビルドしています。
+プロジェクト "d:\.ziphttpd\src\Launcher\ziphttpdTool.sln" (1) は、ノード 1 上に "d:\.ziphttpd\src\Launcher\launcher\launcher.csproj" (2) をビルドしています (既定のターゲット)。
+プロジェクト ファイルに ToolsVersion="15.0" が含まれています。このツールセットが不明であるか、存在しない可能性があります。その場合は、適切なバージョンの MSBuild をインストールして解決するか、ビルドがポリシー上の理由により特定の ToolsVersion を使用するよう強制されている可能性があります。プロジェクトを ToolsVersion="4.0" として扱います。詳細については、http://go.microsoft.com/fwlink/?LinkId=291333 を参照してくだ
+さい。
+CoreResGen:
+  古いリソースは、それらのソース ファイルに対して存在しません。リソース生成を省略します。
+GenerateTargetFrameworkMonikerAttribute:
+すべての出力ファイルが入力ファイルに対して最新なので、ターゲット "GenerateTargetFrameworkMonikerAttribute" を省略します。
+CoreCompile:
+すべての出力ファイルが入力ファイルに対して最新なので、ターゲット "CoreCompile" を省略します。
+CopyFilesToOutputDirectory:
+  "obj\Release\launcher.exe" から "bin\Release\launcher.exe" へファイルをコピーしています。
+  launcher -> d:\.ziphttpd\src\Launcher\launcher\bin\Release\launcher.exe
+プロジェクト "d:\.ziphttpd\src\Launcher\launcher\launcher.csproj" (既定のターゲット) のビルドが完了しました。
+
+プロジェクト "d:\.ziphttpd\src\Launcher\ziphttpdTool.sln" (既定のターゲット) のビルドが完了しました。
+
+
+ビルドに成功しました。
+    0 個の警告
+    0 エラー
+
+経過時間 00:00:00.67
+        1 個のファイルをコピーしました。
+
+d:\.ziphttpd>
+</code></pre></div>
+
+	<a name="ドキュメントの更新">
+	<h3>ドキュメントの更新</h3>
+
+	<p class="ind1em">
+		更新されたドキュメントを自動的にダウンロードすることができます。<br>
+		そのためには zhget を引数無しで実行します。<br>
+		ZipHttpd を再起動すればドキュメントは更新されたものになります。<br>
+	</p>
+
+	<p class="append">
+		./zhget<br>
+	</p>
+
+<div class="half common all">ドキュメントの更新<pre><code class="language-shell">d:\.ziphttpd>zhget
+
+d:\.ziphttpd> 
+</code></pre></div>
+
+	<hr/>
+	<p>
+		Copyright (C) 2020- <a href="https://ziphttpd.com/" target="ziphttpd">ZipHttpd.com</a> [<a href="mailto:ziphttpd@xorver.com" target="mail">mail</a>]<br>
+	</p>
+</body>
+</html>
